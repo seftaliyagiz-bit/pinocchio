@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pinocchio Waffles & Ice Cream · Margarethaplein · Leuven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <style>
+    :root {
+      --cream:       #fdf8f0;
+      --cream-dark:  #f5ede0;
+      --caramel:     #c4842a;
+      --caramel-dim: rgba(196,132,42,0.14);
+      --caramel-light: #d8962e;
+      --choco:       #3d1c02;
+      --choco-deep:  #1e0e00;
+      --blush:       #f5d0c0;
+      --brown-text:  #1e0e00;
+      --muted:       #7a5c3a;
+      --white:       #ffffff;
+      --border:      rgba(196,132,42,0.22);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--brown-text); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(26px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      0%,100% { opacity: 0.7; }
+      50%      { opacity: 1; }
+    }
+
+    .fade-up { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--cream); border-bottom: 1px solid var(--border);
+      padding: 0 40px; transition: box-shadow 0.3s;
+    }
+    #navbar.scrolled { box-shadow: 0 4px 24px rgba(196,132,42,0.18); }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      height: 66px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    }
+    .nav-logo { text-decoration: none; line-height: 1; display: flex; align-items: baseline; gap: 0; }
+    .logo-name {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700;
+      font-size: 26px; color: var(--caramel);
+    }
+    .logo-tag {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 11px;
+      color: var(--muted); margin-left: 9px; letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; align-items: center; gap: 30px; list-style: none; }
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px;
+      color: var(--brown-text); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--caramel); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .nav-cta {
+      background: var(--caramel); color: var(--white);
+      padding: 10px 22px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 13px;
+      letter-spacing: 0.04em; text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--caramel-light); transform: translateY(-1px); }
+    .lang-toggle { display: flex; gap: 3px; }
+    .lang-btn {
+      background: transparent; border: 1.5px solid var(--border);
+      color: var(--muted); padding: 4px 10px; border-radius: 6px;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 11px;
+      letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s;
+    }
+    .lang-btn.active { background: var(--caramel); color: var(--white); border-color: var(--caramel); }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span { width: 22px; height: 2px; background: var(--brown-text); display: block; transition: all 0.25s; }
+    .mobile-menu {
+      display: none; flex-direction: column;
+      background: var(--cream); border-top: 1px solid var(--border);
+    }
+    .mobile-menu a {
+      padding: 14px 40px; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px;
+      color: var(--brown-text); text-decoration: none; border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--caramel); }
+    .mobile-menu.open { display: flex; }
+    @media (max-width: 768px) {
+      #navbar { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-cta { display: none; }
+    }
+
+    /* ── HERO ── */
+    #hero {
+      width: 100%; min-height: 100vh; position: relative;
+      display: flex; align-items: center;
+      background-image: url('images/hero.png');
+      background-size: cover; background-position: left center;
+    }
+    #hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(61,28,2,0.50);
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 680px; width: 100%;
+      padding: 120px 40px 80px;
+      margin-left: max(40px, calc((100vw - 1200px) / 2));
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(196,132,42,0.18); border: 1px solid rgba(196,132,42,0.45);
+      border-radius: 99px; padding: 7px 20px; margin-bottom: 28px;
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 12px;
+      color: #fde89a; letter-spacing: 0.04em;
+      animation: fadeUp 0.75s ease 0.1s both;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700;
+      line-height: 0.88; letter-spacing: -0.02em; margin-bottom: 8px;
+      animation: fadeUp 0.75s ease 0.22s both;
+    }
+    .hero-title .t-name { display: block; font-size: clamp(72px,11vw,140px); color: #fdf8f0; }
+    .hero-title .t-sub  { display: block; font-size: clamp(28px,4vw,50px); color: var(--caramel); font-style: italic; margin-top: 4px; }
+    .hero-tagline {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+      font-size: clamp(15px,1.9vw,20px); color: rgba(253,248,240,0.78);
+      margin-top: 20px; margin-bottom: 28px; line-height: 1.55;
+      animation: fadeUp 0.75s ease 0.36s both;
+    }
+    .hero-icons {
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 36px;
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 13px;
+      color: rgba(253,248,240,0.6);
+      animation: fadeUp 0.75s ease 0.46s both;
+    }
+    .hero-icons span { display: flex; align-items: center; gap: 6px; }
+    .hero-btns {
+      display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px;
+      animation: fadeUp 0.75s ease 0.56s both;
+    }
+    .btn-caramel {
+      background: var(--caramel); color: var(--white); padding: 15px 32px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 14px;
+      letter-spacing: 0.04em; text-decoration: none; border: none; cursor: pointer;
+      display: inline-block; transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 6px 24px rgba(196,132,42,0.4);
+    }
+    .btn-caramel:hover { background: var(--caramel-light); transform: translateY(-2px); }
+    .btn-cream-outline {
+      background: transparent; color: #fdf8f0; padding: 14px 32px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 14px;
+      letter-spacing: 0.04em; text-decoration: none; display: inline-block;
+      border: 2px solid rgba(253,248,240,0.45);
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+    .btn-cream-outline:hover { border-color: rgba(253,248,240,0.85); background: rgba(253,248,240,0.1); transform: translateY(-2px); }
+    .hero-open {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 13px;
+      letter-spacing: 0.06em; color: rgba(253,248,240,0.5);
+      animation: fadeUp 0.75s ease 0.66s both;
+    }
+    .pulse-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #fde89a; box-shadow: 0 0 8px #fde89a;
+      animation: pulseGlow 2s ease-in-out infinite; flex-shrink: 0;
+    }
+    @media (max-width: 768px) {
+      .hero-content { padding: 100px 24px 60px; margin-left: 0; }
+    }
+
+    /* ── SIGNATURE STRIP ── */
+    #strip { background: var(--white); padding: 60px 40px; border-bottom: 1px solid var(--border); }
+    .strip-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    }
+    .strip-card {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      padding: 34px 20px; border-radius: 14px;
+      background: var(--cream); border: 1px solid var(--border);
+      text-align: center; transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .strip-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(196,132,42,0.14); }
+    .strip-emoji { font-size: 32px; }
+    .strip-title {
+      font-family: 'Playfair Display', serif; font-weight: 600; font-size: 16px;
+      color: var(--brown-text);
+    }
+    .strip-sub {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 13px;
+      color: var(--muted); line-height: 1.55;
+    }
+    @media (max-width: 768px) {
+      #strip { padding: 44px 20px; }
+      .strip-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+    }
+    @media (max-width: 480px) { .strip-grid { grid-template-columns: 1fr; } }
+
+    /* ── SHARED ── */
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .section-label::before, .section-label::after {
+      content: ''; flex: 0 0 28px; height: 1px; background: rgba(196,132,42,0.35);
+    }
+    .section-label span {
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 11px;
+      letter-spacing: 0.24em; text-transform: uppercase; color: var(--caramel);
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;
+      font-size: clamp(36px,5vw,62px); line-height: 1; letter-spacing: -0.02em;
+      color: var(--brown-text); margin-bottom: 48px;
+    }
+    .accent-caramel { color: var(--caramel); }
+    .accent-choco   { color: var(--choco); }
+
+    /* ── MENU ── */
+    #menu { background: var(--cream); padding: 100px 40px; }
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 44px; }
+    .menu-card {
+      background: var(--white); border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 30px 26px;
+      box-shadow: 0 2px 16px rgba(196,132,42,0.08);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .menu-card:hover { transform: translateY(-4px); box-shadow: 0 10px 36px rgba(196,132,42,0.16); }
+    .menu-emoji { font-size: 30px; margin-bottom: 14px; display: block; }
+    .menu-card-header {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px;
+    }
+    .menu-name {
+      font-family: 'Playfair Display', serif; font-weight: 600; font-size: 20px;
+      color: var(--brown-text);
+    }
+    .menu-badge {
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 10px;
+      letter-spacing: 0.08em; padding: 3px 10px; border-radius: 99px;
+      background: var(--caramel); color: var(--white); white-space: nowrap; flex-shrink: 0;
+    }
+    .menu-desc {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px;
+      color: var(--muted); line-height: 1.7; margin-bottom: 10px;
+    }
+    .menu-toppings {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
+    }
+    .topping-tag {
+      background: var(--cream-dark); border: 1px solid var(--border);
+      border-radius: 99px; padding: 4px 12px;
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 12px;
+      color: var(--muted);
+    }
+    .menu-flavours {
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 13px;
+      color: var(--caramel); margin-top: 10px; font-style: italic;
+    }
+    @media (max-width: 768px) {
+      #menu { padding: 72px 20px; }
+      .menu-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience { background: var(--choco); padding: 100px 40px; }
+    .experience-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;
+    }
+    .exp-img {
+      border-radius: 14px; overflow: hidden;
+      border: 3px solid var(--caramel);
+      box-shadow: 0 16px 56px rgba(196,132,42,0.2);
+    }
+    .exp-img img { width: 100%; display: block; aspect-ratio: 4/5; object-fit: cover; }
+    .exp-label span { color: rgba(196,132,42,0.7); }
+    .exp-label::before, .exp-label::after { background: rgba(196,132,42,0.25); }
+    .exp-title {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;
+      font-size: clamp(30px,4vw,52px); line-height: 1.05; letter-spacing: -0.02em;
+      color: var(--cream); margin-bottom: 10px;
+    }
+    .exp-italic {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+      font-size: 20px; color: var(--caramel); margin-bottom: 22px; line-height: 1.4;
+    }
+    .exp-body {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 16px;
+      line-height: 1.85; color: rgba(253,248,240,0.72); margin-bottom: 36px;
+    }
+    .exp-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+    .exp-stat-val {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 18px; color: var(--caramel); display: block; margin-bottom: 3px;
+    }
+    .exp-stat-label {
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: rgba(253,248,240,0.4);
+    }
+    @media (max-width: 768px) {
+      #experience { padding: 72px 20px; }
+      .experience-inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    /* ── REVIEWS ── */
+    #reviews { background: var(--cream); padding: 100px 40px; }
+    .reviews-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 28px;
+    }
+    .review-card {
+      background: var(--white); border-radius: 14px; padding: 28px 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 16px rgba(196,132,42,0.08);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .review-card:hover { transform: translateY(-4px); box-shadow: 0 10px 36px rgba(196,132,42,0.14); }
+    .review-stars { color: var(--caramel); font-size: 16px; letter-spacing: 2px; margin-bottom: 14px; }
+    .review-text {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+      font-size: 15px; line-height: 1.7; color: var(--brown-text); margin-bottom: 16px;
+    }
+    .review-source {
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+    @media (max-width: 768px) {
+      #reviews { padding: 72px 20px; }
+      .reviews-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── LOCATION ── */
+    #location { background: var(--white); padding: 100px 40px; }
+    .location-inner { max-width: 900px; margin: 0 auto; }
+    .location-intro {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 17px;
+      color: var(--muted); line-height: 1.8; margin-bottom: 36px; max-width: 620px;
+    }
+    .map-wrap { border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(196,132,42,0.1); }
+    .map-wrap iframe { display: block; }
+    @media (max-width: 768px) { #location { padding: 72px 20px; } }
+
+    /* ── CONTACT & HOURS ── */
+    #contact { background: var(--choco); padding: 100px 40px; }
+    .contact-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start;
+    }
+    .contact-title {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;
+      font-size: clamp(30px,4vw,50px); line-height: 1.1; letter-spacing: -0.02em;
+      color: var(--cream); margin-bottom: 32px;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+    .contact-row { display: flex; gap: 14px; align-items: flex-start; }
+    .contact-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: rgba(196,132,42,0.1); border: 1px solid rgba(196,132,42,0.2);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      color: var(--caramel); font-size: 13px; margin-top: 2px;
+    }
+    .contact-val {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px;
+      color: rgba(253,248,240,0.72); line-height: 1.55;
+    }
+    .hours-block {
+      background: rgba(196,132,42,0.06); border: 1px solid rgba(196,132,42,0.15);
+      border-radius: 10px; padding: 20px 22px; margin-bottom: 20px;
+    }
+    .hours-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 0; border-bottom: 1px solid rgba(196,132,42,0.08);
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-day {
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 14px;
+      color: rgba(253,248,240,0.55);
+    }
+    .hours-time {
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px;
+      color: var(--caramel);
+    }
+    .access-note {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 13px;
+      color: rgba(253,248,240,0.4); letter-spacing: 0.02em;
+    }
+    .form-title {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+      font-size: 28px; color: var(--cream); margin-bottom: 26px;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 10px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(253,248,240,0.35); margin-bottom: 7px;
+    }
+    .form-input, .form-textarea {
+      width: 100%; background: rgba(253,248,240,0.06);
+      border: 1px solid rgba(196,132,42,0.2);
+      border-radius: 10px; padding: 13px 15px;
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px;
+      color: rgba(253,248,240,0.88); outline: none; transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: rgba(196,132,42,0.5); }
+    .form-textarea { resize: vertical; min-height: 110px; }
+    .form-submit {
+      margin-top: 8px; padding: 13px 30px; background: var(--caramel); color: var(--white);
+      border: none; border-radius: 10px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 13px;
+      letter-spacing: 0.06em; transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 4px 16px rgba(196,132,42,0.35);
+    }
+    .form-submit:hover { background: var(--caramel-light); transform: translateY(-1px); }
+    .form-success {
+      display: none; padding: 20px;
+      background: rgba(196,132,42,0.1); border: 1px solid rgba(196,132,42,0.25);
+      border-radius: 10px; text-align: center;
+      font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px;
+      color: var(--caramel);
+    }
+    @media (max-width: 768px) {
+      #contact { padding: 72px 20px; }
+      .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ── FOOTER ── */
+    #footer {
+      background: var(--choco-deep); border-top: 1px solid rgba(196,132,42,0.12);
+      padding: 36px 40px 28px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700;
+      font-size: 22px; color: var(--caramel); text-decoration: none;
+    }
+    .footer-tagline {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.06em; color: rgba(253,248,240,0.3); margin-top: 3px;
+    }
+    .footer-copy {
+      font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 11px;
+      letter-spacing: 0.06em; color: rgba(253,248,240,0.2); text-align: center;
+    }
+    .footer-links { display: flex; gap: 16px; align-items: center; }
+    .footer-links a {
+      font-family: 'DM Sans', sans-serif; font-weight: 400; font-size: 13px;
+      color: var(--caramel); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--caramel-light); }
+    @media (max-width: 768px) {
+      #footer { padding: 28px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .footer-copy { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ━━━ NAVBAR ━━━ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="logo-name">🧇 Pinocchio</span>
+      <span class="logo-tag">Waffles &amp; Ice Cream · Leuven</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#menu"       data-lang="nav_menu">Menu</a></li>
+      <li><a href="#experience" data-lang="nav_about">Over ons</a></li>
+      <li><a href="#location"   data-lang="nav_location">Locatie</a></li>
+      <li><a href="#contact"    data-lang="nav_contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('nl')">NL</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <a href="#location" class="nav-cta" data-lang="nav_cta">Kom langs!</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#menu"       data-lang="nav_menu"     onclick="closeMobile()">Menu</a>
+    <a href="#experience" data-lang="nav_about"    onclick="closeMobile()">Over ons</a>
+    <a href="#location"   data-lang="nav_location" onclick="closeMobile()">Locatie</a>
+    <a href="#contact"    data-lang="nav_contact"  onclick="closeMobile()">Contact</a>
+    <a href="#location" data-lang="nav_cta" style="color:var(--caramel);font-weight:600;" onclick="closeMobile()">Kom langs!</a>
+  </div>
+</nav>
+
+<!-- ━━━ HERO ━━━ -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-badge" data-lang="hero_badge">🧇 #1 Waffle in Leuven · Vers gebakken</div>
+    <h1 class="hero-title">
+      <span class="t-name">Pinocchio</span>
+      <span class="t-sub">Waffles &amp; Ice Cream</span>
+    </h1>
+    <p class="hero-tagline" data-lang="hero_tagline">De lekkerste wafels van Leuven, vers gebakken voor jouw ogen</p>
+    <div class="hero-icons">
+      <span>🧇 <span data-lang="icon_waffle">Vers gebakken</span></span>
+      <span>🍦 <span data-lang="icon_ice">Ijs</span></span>
+      <span>📍 Margarethaplein</span>
+    </div>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-caramel" data-lang="hero_cta1">Bekijk ons menu</a>
+      <a href="#location" class="btn-cream-outline" data-lang="hero_cta2">Onze locatie</a>
+    </div>
+    <div class="hero-open">
+      <div class="pulse-dot"></div>
+      <span data-lang="hero_open">Vandaag open · 10:00 – 19:00</span>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ SIGNATURE STRIP ━━━ -->
+<section id="strip">
+  <div class="strip-grid">
+    <div class="strip-card fade-up">
+      <div class="strip-emoji">🧇</div>
+      <div class="strip-title" data-lang="strip1_title">Verse Luikse wafels</div>
+      <div class="strip-sub" data-lang="strip1_sub">Krokant vanbuiten, zacht vanbinnen — gebakken voor jouw ogen</div>
+    </div>
+    <div class="strip-card fade-up" style="transition-delay:0.1s">
+      <div class="strip-emoji">🍫</div>
+      <div class="strip-title" data-lang="strip2_title">Premium toppings</div>
+      <div class="strip-sub" data-lang="strip2_sub">Chocolade, speculoos, karamel, slagroom, vers fruit</div>
+    </div>
+    <div class="strip-card fade-up" style="transition-delay:0.2s">
+      <div class="strip-emoji">🍦</div>
+      <div class="strip-title" data-lang="strip3_title">Ambachtelijk ijs</div>
+      <div class="strip-sub" data-lang="strip3_sub">Vele smaken — grote porties, verse ingrediënten</div>
+    </div>
+    <div class="strip-card fade-up" style="transition-delay:0.3s">
+      <div class="strip-emoji">☕</div>
+      <div class="strip-title" data-lang="strip4_title">Koffie to go</div>
+      <div class="strip-sub" data-lang="strip4_sub">Perfecte koffie bij je wafel</div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ MENU ━━━ -->
+<section id="menu">
+  <div class="section-inner">
+    <div class="section-label fade-up"><span data-lang="menu_label">Ons Aanbod</span></div>
+    <h2 class="section-title fade-up"><span class="accent-choco">Ons</span> <span class="accent-caramel">Menu</span></h2>
+    <div class="menu-grid">
+      <!-- Wafels -->
+      <div class="menu-card fade-up">
+        <span class="menu-emoji">🧇</span>
+        <div class="menu-card-header">
+          <div class="menu-name" data-lang="menu1_name">Luikse Wafel</div>
+          <span class="menu-badge">⭐ SIGNATURE</span>
+        </div>
+        <p class="menu-desc" data-lang="menu1_desc">De klassieker — krokant, chewy, met gekarameliseerde suikerparel. Kies je topping:</p>
+        <div class="menu-toppings">
+          <span class="topping-tag" data-lang="top1">Chocolade</span>
+          <span class="topping-tag" data-lang="top2">Speculoos</span>
+          <span class="topping-tag" data-lang="top3">Karamel</span>
+          <span class="topping-tag" data-lang="top4">Slagroom</span>
+          <span class="topping-tag">Nutella</span>
+          <span class="topping-tag" data-lang="top5">Vers fruit</span>
+          <span class="topping-tag" data-lang="top6">Banaan + ijs</span>
+        </div>
+      </div>
+      <div class="menu-card fade-up" style="transition-delay:0.1s">
+        <span class="menu-emoji">🧇</span>
+        <div class="menu-card-header">
+          <div class="menu-name" data-lang="menu2_name">Brusselse Wafel</div>
+        </div>
+        <p class="menu-desc" data-lang="menu2_desc">Lichter en krokanter — perfect met een bolletje ijs of slagroom voor een complete verwennerij.</p>
+      </div>
+      <!-- Ijs -->
+      <div class="menu-card fade-up" style="transition-delay:0.05s">
+        <span class="menu-emoji">🍦</span>
+        <div class="menu-card-header">
+          <div class="menu-name" data-lang="menu3_name">Ambachtelijk Ijs</div>
+        </div>
+        <p class="menu-desc" data-lang="menu3_desc">Dagverse smaken — grote bollen, eerlijke prijs. Vraag de dagsmaken!</p>
+        <p class="menu-flavours" data-lang="menu3_flavours">Banaan · Vanille · Chocolade · Pistache · Speculoos</p>
+      </div>
+      <div class="menu-card fade-up" style="transition-delay:0.15s">
+        <span class="menu-emoji">☕</span>
+        <div class="menu-card-header">
+          <div class="menu-name" data-lang="menu4_name">Koffie &amp; Dranken</div>
+        </div>
+        <p class="menu-desc" data-lang="menu4_desc">Verse koffie to go — de perfecte begeleider van je wafel. Reviews zeggen: "waffles and coffee are really good."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ EXPERIENCE ━━━ -->
+<section id="experience">
+  <div class="experience-inner">
+    <div class="exp-img fade-up">
+      <img src="images/food-1.png" alt="Pinocchio wafels Leuven" />
+    </div>
+    <div class="fade-up" style="transition-delay:0.15s">
+      <div class="section-label exp-label" style="margin-bottom:16px;"><span data-lang="exp_label">Onze Verhaal</span></div>
+      <h2 class="exp-title" data-lang="exp_title">Meer dan een wafel.</h2>
+      <p class="exp-italic" data-lang="exp_italic">Het is een Leuvense ervaring.</p>
+      <p class="exp-body" data-lang="exp_body">Bij Pinocchio bakt chef Ugur elke wafel vers voor je ogen. Je ruikt het al van ver — die onweerstaanbare geur van vers deeg en warme chocolade. Haal je wafel, zoek een bankje op de Margarethaplein en geniet van het mooiste uitzicht op het Leuvense Stadhuis. Een echte Leuvense ervaring.</p>
+      <div class="exp-stats">
+        <div>
+          <span class="exp-stat-val" data-lang="stat1_val">Vers gebakken</span>
+          <span class="exp-stat-label">elke dag</span>
+        </div>
+        <div>
+          <span class="exp-stat-val">#1</span>
+          <span class="exp-stat-label" data-lang="stat2_label">Wafel Leuven</span>
+        </div>
+        <div>
+          <span class="exp-stat-val">Ugur</span>
+          <span class="exp-stat-label" data-lang="stat3_label">recept & warmte</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ REVIEWS ━━━ -->
+<section id="reviews">
+  <div class="section-inner">
+    <div class="section-label fade-up"><span data-lang="reviews_label">Reviews</span></div>
+    <h2 class="section-title fade-up" data-lang="reviews_title">Wat onze <span class="accent-caramel">klanten</span> zeggen</h2>
+    <div class="reviews-grid">
+      <div class="review-card fade-up">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Best waffles I've tried in my life!!! Very fresh, very tasty, Ugur is an amazing chef, thank you very much!!!!"</p>
+        <div class="review-source">Google Review</div>
+      </div>
+      <div class="review-card fade-up" style="transition-delay:0.1s">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The waffles with chocolate are amazing, they make them in front of you and the dough is just incredible. Eating them on the steps of the city hall is the best activity in Leuven!"</p>
+        <div class="review-source">Wanderlog</div>
+      </div>
+      <div class="review-card fade-up" style="transition-delay:0.2s">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"No other waffles compare to these. You smell it from afar. Ice creams are also very flavourful. Coming back to this one!"</p>
+        <div class="review-source">Restaurant Guru</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ LOCATION ━━━ -->
+<section id="location">
+  <div class="location-inner">
+    <div class="section-label fade-up"><span data-lang="loc_label">Locatie</span></div>
+    <h2 class="section-title fade-up" data-lang="loc_title">Kom ons <span class="accent-caramel">vinden</span></h2>
+    <p class="location-intro fade-up" data-lang="loc_intro">Geen zitplaatsen binnen, maar dat is net het leukste! Haal je wafel en geniet op de bankjes van Margarethaplein met zicht op het historische Leuvense Stadhuis.</p>
+    <div class="map-wrap fade-up">
+      <iframe
+        src="https://www.google.com/maps?q=Margarethaplein+11a,+3000+Leuven&output=embed"
+        width="100%" height="350"
+        style="border:0;border-radius:14px;"
+        allowfullscreen loading="lazy"
+        title="Pinocchio Waffles Leuven"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ CONTACT & HOURS ━━━ -->
+<section id="contact">
+  <div class="contact-inner">
+    <!-- Left -->
+    <div class="fade-up">
+      <div class="section-label exp-label" style="margin-bottom:16px;"><span data-lang="contact_label">Contact &amp; Uren</span></div>
+      <h2 class="contact-title" data-lang="contact_title">Margarethaplein 11a</h2>
+      <div class="contact-info">
+        <div class="contact-row">
+          <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div class="contact-val">Margarethaplein 11a, 3000 Leuven<br><span style="font-size:12px;color:rgba(253,248,240,0.35);" data-lang="contact_near">Vlakbij Sint-Pieterskerk &amp; Stadhuis</span></div>
+        </div>
+      </div>
+      <div class="hours-block">
+        <div class="hours-row">
+          <span class="hours-day" data-lang="hours_monfri">Ma–Vr</span>
+          <span class="hours-time">10:00 – 19:00</span>
+        </div>
+        <div class="hours-row">
+          <span class="hours-day" data-lang="hours_sat">Zaterdag</span>
+          <span class="hours-time">10:00 – 20:00</span>
+        </div>
+        <div class="hours-row">
+          <span class="hours-day" data-lang="hours_sun">Zondag</span>
+          <span class="hours-time">11:00 – 18:00</span>
+        </div>
+      </div>
+      <p class="access-note" data-lang="access_note">♿ Rolstoeltoegankelijk · 👨‍👩‍👧 Gezinsvriendelijk</p>
+    </div>
+    <!-- Right: Form -->
+    <div class="fade-up" style="transition-delay:0.15s">
+      <div class="form-title" data-lang="form_title">Stuur een bericht</div>
+      <form id="contact-form" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label class="form-label" data-lang="form_name">Naam</label>
+          <input class="form-input" type="text" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-lang="form_message">Bericht</label>
+          <textarea class="form-textarea" required></textarea>
+        </div>
+        <button type="submit" class="form-submit" data-lang="form_submit">Verstuur →</button>
+      </form>
+      <div class="form-success" id="form-success" data-lang="form_success">Bedankt! We antwoorden zo snel mogelijk.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ FOOTER ━━━ -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div>
+      <a href="#" class="footer-logo">🧇 Pinocchio</a>
+      <div class="footer-tagline" data-lang="footer_tagline">Waffles &amp; Ice Cream · Leuven</div>
+    </div>
+    <div class="footer-copy">© 2026 · Margarethaplein 11a · 3000 Leuven</div>
+    <div class="footer-links">
+      <a href="https://www.google.com/maps?q=Margarethaplein+11a,+3000+Leuven" target="_blank" rel="noopener">
+        <i class="fa-solid fa-location-dot"></i> Google Maps
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ─── TRANSLATIONS ─────────────────────────────────────────── */
+const T = {
+  nl: {
+    nav_menu: 'Menu', nav_about: 'Over ons', nav_location: 'Locatie', nav_contact: 'Contact',
+    nav_cta: 'Kom langs!',
+    hero_badge: '🧇 #1 Waffle in Leuven · Vers gebakken',
+    hero_tagline: 'De lekkerste wafels van Leuven, vers gebakken voor jouw ogen',
+    icon_waffle: 'Vers gebakken', icon_ice: 'Ijs',
+    hero_cta1: 'Bekijk ons menu', hero_cta2: 'Onze locatie',
+    hero_open: 'Vandaag open · 10:00 – 19:00',
+    strip1_title: 'Verse Luikse wafels',
+    strip1_sub: 'Krokant vanbuiten, zacht vanbinnen — gebakken voor jouw ogen',
+    strip2_title: 'Premium toppings',
+    strip2_sub: 'Chocolade, speculoos, karamel, slagroom, vers fruit',
+    strip3_title: 'Ambachtelijk ijs',
+    strip3_sub: 'Vele smaken — grote porties, verse ingrediënten',
+    strip4_title: 'Koffie to go',
+    strip4_sub: 'Perfecte koffie bij je wafel',
+    menu_label: 'Ons Aanbod',
+    menu1_name: 'Luikse Wafel',
+    menu1_desc: 'De klassieker — krokant, chewy, met gekarameliseerde suikerparel. Kies je topping:',
+    top1: 'Chocolade', top2: 'Speculoos', top3: 'Karamel', top4: 'Slagroom',
+    top5: 'Vers fruit', top6: 'Banaan + ijs',
+    menu2_name: 'Brusselse Wafel',
+    menu2_desc: 'Lichter en krokanter — perfect met een bolletje ijs of slagroom voor een complete verwennerij.',
+    menu3_name: 'Ambachtelijk Ijs',
+    menu3_desc: 'Dagverse smaken — grote bollen, eerlijke prijs. Vraag de dagsmaken!',
+    menu3_flavours: 'Banaan · Vanille · Chocolade · Pistache · Speculoos',
+    menu4_name: 'Koffie & Dranken',
+    menu4_desc: 'Verse koffie to go — de perfecte begeleider van je wafel.',
+    exp_label: 'Ons Verhaal',
+    exp_title: 'Meer dan een wafel.',
+    exp_italic: 'Het is een Leuvense ervaring.',
+    exp_body: 'Bij Pinocchio bakt chef Ugur elke wafel vers voor je ogen. Je ruikt het al van ver — die onweerstaanbare geur van vers deeg en warme chocolade. Haal je wafel, zoek een bankje op de Margarethaplein en geniet van het mooiste uitzicht op het Leuvense Stadhuis. Een echte Leuvense ervaring.',
+    stat1_val: 'Vers gebakken', stat2_label: 'Wafel Leuven', stat3_label: "recept & warmte",
+    reviews_label: 'Reviews',
+    reviews_title: 'Wat onze klanten zeggen',
+    loc_label: 'Locatie',
+    loc_title: 'Kom ons vinden',
+    loc_intro: 'Geen zitplaatsen binnen, maar dat is net het leukste! Haal je wafel en geniet op de bankjes van Margarethaplein met zicht op het historische Leuvense Stadhuis.',
+    contact_label: 'Contact & Uren',
+    contact_title: 'Margarethaplein 11a',
+    contact_near: 'Vlakbij Sint-Pieterskerk & Stadhuis',
+    hours_monfri: 'Ma–Vr', hours_sat: 'Zaterdag', hours_sun: 'Zondag',
+    access_note: '♿ Rolstoeltoegankelijk · 👨‍👩‍👧 Gezinsvriendelijk',
+    form_title: 'Stuur een bericht',
+    form_name: 'Naam', form_message: 'Bericht', form_submit: 'Verstuur →',
+    form_success: 'Bedankt! We antwoorden zo snel mogelijk.',
+    footer_tagline: 'Waffles & Ice Cream · Leuven',
+  },
+  en: {
+    nav_menu: 'Menu', nav_about: 'About', nav_location: 'Location', nav_contact: 'Contact',
+    nav_cta: 'Visit us!',
+    hero_badge: '🧇 #1 Waffle in Leuven · Freshly made',
+    hero_tagline: 'The best waffles in Leuven, freshly baked right before your eyes',
+    icon_waffle: 'Freshly baked', icon_ice: 'Ice cream',
+    hero_cta1: 'View our menu', hero_cta2: 'Find us',
+    hero_open: 'Open today · 10:00 – 19:00',
+    strip1_title: 'Fresh Liège waffles',
+    strip1_sub: 'Crispy outside, chewy inside — baked right before your eyes',
+    strip2_title: 'Premium toppings',
+    strip2_sub: 'Chocolate, speculoos, caramel, whipped cream, fresh fruit',
+    strip3_title: 'Artisan ice cream',
+    strip3_sub: 'Many flavours — generous scoops, fresh ingredients',
+    strip4_title: 'Coffee to go',
+    strip4_sub: 'Perfect coffee with your waffle',
+    menu_label: 'Our Offer',
+    menu1_name: 'Liège Waffle',
+    menu1_desc: 'The classic — crispy, chewy, with caramelized sugar pearls. Choose your topping:',
+    top1: 'Chocolate', top2: 'Speculoos', top3: 'Caramel', top4: 'Whipped cream',
+    top5: 'Fresh fruit', top6: 'Banana + ice cream',
+    menu2_name: 'Brussels Waffle',
+    menu2_desc: 'Lighter and crispier — perfect with a scoop of ice cream or whipped cream for a complete treat.',
+    menu3_name: 'Artisan Ice Cream',
+    menu3_desc: 'Daily fresh flavours — generous scoops, fair price. Ask for today\'s flavours!',
+    menu3_flavours: 'Banana · Vanilla · Chocolate · Pistachio · Speculoos',
+    menu4_name: 'Coffee & Drinks',
+    menu4_desc: 'Fresh coffee to go — the perfect companion to your waffle.',
+    exp_label: 'Our Story',
+    exp_title: 'More than a waffle.',
+    exp_italic: "It's a Leuven experience.",
+    exp_body: 'At Pinocchio, chef Ugur bakes every waffle fresh right before your eyes. You can smell it from afar — that irresistible aroma of fresh dough and warm chocolate. Get your waffle, find a bench on Margarethaplein and enjoy the most beautiful view of Leuven\'s historic Town Hall. A true Leuven experience.',
+    stat1_val: 'Freshly baked', stat2_label: 'Waffle Leuven', stat3_label: 'recipe & warmth',
+    reviews_label: 'Reviews',
+    reviews_title: 'What our customers say',
+    loc_label: 'Location',
+    loc_title: 'Find us',
+    loc_intro: "No indoor seating, but that's exactly the charm! Get your waffle and enjoy it on the benches of Margarethaplein with a view of Leuven's historic Town Hall.",
+    contact_label: 'Contact & Hours',
+    contact_title: 'Margarethaplein 11a',
+    contact_near: 'Steps from Sint-Pieterskerk & Town Hall',
+    hours_monfri: 'Mon–Fri', hours_sat: 'Saturday', hours_sun: 'Sunday',
+    access_note: '♿ Wheelchair accessible · 👨‍👩‍👧 Family friendly',
+    form_title: 'Send a message',
+    form_name: 'Name', form_message: 'Message', form_submit: 'Send →',
+    form_success: "Thanks! We'll get back to you soon.",
+    footer_tagline: 'Waffles & Ice Cream · Leuven',
+  }
+};
+
+let currentLang = localStorage.getItem('pi-lang') || 'nl';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('pi-lang', lang);
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    const key = el.getAttribute('data-lang');
+    if (T[lang][key] !== undefined) el.textContent = T[lang][key];
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+  });
+}
+
+/* ─── NAVBAR SCROLL ─────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ─── HAMBURGER ─────────────────────────────────────────────── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.toggle('open');
+});
+function closeMobile() { document.getElementById('mobile-menu').classList.remove('open'); }
+
+/* ─── CONTACT FORM ──────────────────────────────────────────── */
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('contact-form').style.display = 'none';
+  const s = document.getElementById('form-success');
+  s.style.display = 'block';
+  s.textContent = T[currentLang].form_success;
+}
+
+/* ─── SCROLL ANIMATIONS ─────────────────────────────────────── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+/* ─── INIT ──────────────────────────────────────────────────── */
+setLang(currentLang);
+</script>
+</body>
+</html>
